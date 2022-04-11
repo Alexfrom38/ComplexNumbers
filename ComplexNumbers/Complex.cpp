@@ -1,4 +1,5 @@
 #include "Complex.h"
+
 constexpr auto PI = 3.141567;
 TComplex::TComplex(double _Re , double _Im)
 {
@@ -26,26 +27,70 @@ double TComplex::GetIm()
 
 double TComplex::GetAngle()
 {
+	if (Re == 0) throw "Exception!! Real part of complex numper = 0";
+	else
+	{
+		if (Re > 0 && Im >= 0)
+		{
+			Angle = atan(Im/Re);
+		}
+		else if (Re < 0 && Im >= 0)
+		{
+			Angle = PI - atan(abs(Im / Re));
+		}
+		else if (Re < 0 && Im < 0)
+		{
+			Angle = PI + atan(abs(Im / Re));
+		}
+		else if (Re > 0 && Im < 0)
+		{
+			Angle = 2 * PI - atan(abs(Im / Re));
+		}
+	}
 	return Angle;
+}
+
+double TComplex::GetAngle(const TComplex&p)
+{
+	double _Angle = 0;
+	if (p.Re == 0) throw "Exceprion!! Real part of complex numper = 0";
+	else
+	{
+		if (p.Re > 0 && p.Im >= 0)
+		{
+			_Angle = atan(p.Im / p.Re);
+		}
+		else if (p.Re < 0 && p.Im >= 0)
+		{
+			_Angle = PI - atan(abs(p.Im / p.Re));
+		}
+		else if (p.Re < 0 && p.Im < 0)
+		{
+			_Angle = PI + atan(abs(p.Im / p.Re));
+		}
+		else if (p.Re > 0 && p.Im < 0)
+		{
+			_Angle = 2 * PI - atan(abs(p.Im / p.Re));
+		}
+	}
+	return _Angle;
 }
 
 double TComplex::GetAbs(const TComplex& num)
 {
 	 return sqrt(num.Re * num.Re + num.Im * num.Im);
-
 }
 
 double TComplex::GetAbs()
 {
 	return sqrt(Re * Re + Im * Im);
-
 }
 
 TComplex TComplex::PowNZ(int Numb)
 {
 	TComplex result(*this);
-
-	result.Angle = (atan2(result.Im, result.Re) * 180 / PI) * Numb;
+	
+	result.Angle = result.GetAngle(*this) * Numb;
   double abs = sqrt(Re * Re + Im * Im);
 
 	abs = pow(abs, Numb);
@@ -56,15 +101,41 @@ TComplex TComplex::PowNZ(int Numb)
 
 }
 
+TComplex TComplex::PowQ(int numerator, int denumerator)
+{
+
+	TComplex result(*this);
+
+	result.Angle = result.GetAngle(*this) * numerator;
+	double abs = sqrt(Re * Re + Im * Im);
+
+	abs = pow(abs, numerator);
+
+	result.Re = cos(result.Angle) * abs;
+	result.Im = sin(result.Angle) * abs;
+
+	double q = static_cast<double>(1) / denumerator;
+  abs = exp(log(abs) * q);
+
+	result.Angle = result.Angle / denumerator;
+
+	result.Re = cos(result.Angle) * abs;
+	result.Im = sin(result.Angle) * abs;
+
+	return result;
+ 
+}
+
 void TComplex::GetTrigForm(const TComplex& num)
 {
-	Angle = atan2(num.Im, num.Re) * 180 / PI;
+	Angle = this->GetAngle();
 	std::cout << GetAbs(num) << "*(" << " cos(" << Angle << ") + i*sin(" << Angle << ") )" << std::endl;
 }
 
 void TComplex::GetTrigForm()
 {
-	Angle = atan2(Im, Re) * 180 / PI;
+	
+	Angle = this->GetAngle();
 	std::cout << GetAbs(*this) << "*(" << " cos(" << Angle << ") + i * sin(" << Angle << "))" << std::endl;
 }
 
@@ -84,73 +155,3 @@ void TComplex::SetAngle(double _Angle)
 }
 
 
-TComplex TComplex::operator * (const TComplex& num)
-{
-	TComplex result(*this);
-	result.Re = Re * num.Re - Im * num.Im;
-	result.Im = Re * num.Im + num.Re * Im;
-	return result;
-}
-
-TComplex TComplex::operator + (const TComplex& num)
-{
-	TComplex result(*this);
-	result.Re = Re + num.Re;
-	result.Im = Im + num.Im;
-	return result;
-}
-
-TComplex TComplex::operator-(const TComplex& num)
-{
-	TComplex result(*this);
-	result.Re = Re - num.Re;
-	result.Im = Im - num.Im;
-	return result;
-}
-
-TComplex TComplex::operator / (const TComplex& num)
-{
-	TComplex result(*this);
-	if (num.Im == 0 && num.Re == 0) throw "This problem was called by operator / Division by zero";
-	result.Re = (Re * num.Re + Im * num.Im) / (num.Re * num.Re + num.Im * num.Im);
-	result.Im = (num.Re * Im - Re * num.Im) / (num.Re * num.Re + num.Im * num.Im);
-
-	return result;
-}
-TComplex& TComplex::operator=(const TComplex& num)
-{
-	this->Re = num.Re;
-	this->Im = num.Im;
-	return *this;
-
-}
-
-bool TComplex::operator==(const TComplex& num)
-{
-	if (this->Re == num.Re && this->Im == num.Im) return true;
-	else return false;
-}
-
-
-
-std::ostream& operator<<(std::ostream& stream, const TComplex& num)
-{
-	stream << num.Re << ' ' << '+' << ' ' << num.Im << " * i";
-	return stream;
-}
-
-std::istream& operator>>(std::istream& stream,  TComplex& num)
-{
-	stream >> num.Re;
-	stream >> num.Im;
-	return stream;
-}
-
-
-/*
-2 – написать и протестировать метод возведения комплексного числа в положительную целую степень;
-3 – написать и протестировать метод возведения в отрицательную целую степень (можно расширить предыдущий метод);
-4 – написать и протестировать метод возведения в дробную степень (можно расширить предыдущий метод);
-5 – написать и протестировать метод возведения в комплексную степень;
-
-*/

@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Complex.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="OverloadOperators.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Complex.h" />

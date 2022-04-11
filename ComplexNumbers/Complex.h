@@ -15,10 +15,12 @@ public:
 	double GetRe();
 	double GetIm();
 	double GetAngle();
+	double GetAngle(const TComplex& p);
 	double GetAbs(const TComplex& num);
 	double GetAbs();
 	
 	TComplex PowNZ(int Numb);
+	TComplex PowQ(int numerator, int denumerator);
 
 	void GetTrigForm(const TComplex& num);
 	void GetTrigForm();
@@ -39,11 +41,3 @@ public:
 
 
 };
-/*
-
-
-
-4 – написать и протестировать метод возведения в дробную степень (можно расширить предыдущий метод);
-5 – написать и протестировать метод возведения в комплексную степень;
-
-*/
