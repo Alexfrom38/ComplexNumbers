@@ -35,7 +35,7 @@ public:
 	TComplex& operator = (const TComplex& num);
 	bool operator == (const TComplex& num);
 	friend std::ostream& operator << (std::ostream& stream, const TComplex& num);
-	friend std::istream& operator >> (std::istream& stream, TComplex& num);
+	friend std::istream& operator >> (std::istream& stream, const TComplex& num);
 
 
 };
